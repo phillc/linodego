@@ -105,6 +105,12 @@ func createTestClient(t *testing.T, fixturesYaml string) (*Client, func()) {
 	return &c, recordStopper
 }
 
+func createBetaTestClient(t *testing.T, fixturesYaml string) (*Client, func()) {
+	c, recordStopper := createTestClient(t, fixturesYaml)
+	c.SetBaseURL("https://api.linode.com/v4beta")
+	return c, recordStopper
+}
+
 func TestClientAliases(t *testing.T) {
 	client, _ := createTestClient(t, "")
 

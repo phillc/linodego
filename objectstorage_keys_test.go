@@ -2,9 +2,10 @@ package linodego_test
 
 import (
 	"context"
-	. "github.com/linode/linodego"
 	"strings"
 	"testing"
+
+	. "github.com/linode/linodego"
 )
 
 var (
@@ -14,7 +15,7 @@ var (
 )
 
 func TestGetObjectStorageKey_missing(t *testing.T) {
-	client, teardown := createTestClient(t, "fixtures/TestGetObjectStorageKey_missing")
+	client, teardown := createBetaTestClient(t, "fixtures/TestGetObjectStorageKey_missing")
 	defer teardown()
 
 	notfoundID := 123
@@ -108,7 +109,7 @@ func TestListObjectStorageKeys(t *testing.T) {
 func setupObjectStorageKey(t *testing.T, fixturesYaml string) (*Client, *ObjectStorageKey, func(), error) {
 	t.Helper()
 	var fixtureTeardown func()
-	client, fixtureTeardown := createTestClient(t, fixturesYaml)
+	client, fixtureTeardown := createBetaTestClient(t, fixturesYaml)
 	createOpts := testObjectStorageKeyCreateOpts
 	objectStorageKey, err := client.CreateObjectStorageKey(context.Background(), createOpts)
 	if err != nil {
