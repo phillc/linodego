@@ -9,6 +9,7 @@ GOLANGCILINT_WARN_ARGS := run --no-config --issues-exit-code=0 --disable-all --e
 test: build lint
 	@LINODE_FIXTURE_MODE="play" \
 	LINODE_TOKEN="awesometokenawesometokenawesometoken" \
+	LINODE_API_VERSION="v4beta" \
 	GO111MODULE="on" \
 	go test $(ARGS)
 
@@ -32,6 +33,7 @@ refresh-fixtures: clean-fixtures fixtures
 run_fixtures:
 	@echo "* Running fixtures"
 	@LINODE_TOKEN=$(LINODE_TOKEN) \
+	LINODE_API_VERSION="v4beta" \
 	LINODE_FIXTURE_MODE="record" go test $(ARGS)
 
 sanitize:
