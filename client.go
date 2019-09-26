@@ -49,48 +49,49 @@ type Client struct {
 
 	millisecondsPerPoll time.Duration
 
-	Images                *Resource
-	InstanceDisks         *Resource
-	InstanceConfigs       *Resource
-	InstanceSnapshots     *Resource
-	InstanceIPs           *Resource
-	InstanceVolumes       *Resource
-	InstanceStats         *Resource
-	Instances             *Resource
+	Account               *Resource
+	AccountSettings       *Resource
+	DomainRecords         *Resource
+	Domains               *Resource
+	Events                *Resource
 	IPAddresses           *Resource
 	IPv6Pools             *Resource
 	IPv6Ranges            *Resource
-	Regions               *Resource
-	StackScripts          *Resource
-	Volumes               *Resource
+	Images                *Resource
+	InstanceConfigs       *Resource
+	InstanceDisks         *Resource
+	InstanceIPs           *Resource
+	InstanceSnapshots     *Resource
+	InstanceStats         *Resource
+	InstanceVolumes       *Resource
+	Instances             *Resource
+	InvoiceItems          *Resource
+	Invoices              *Resource
 	Kernels               *Resource
-	Types                 *Resource
-	Domains               *Resource
-	DomainRecords         *Resource
 	Longview              *Resource
 	LongviewClients       *Resource
 	LongviewSubscriptions *Resource
-	NodeBalancers         *Resource
+	Managed               *Resource
 	NodeBalancerConfigs   *Resource
 	NodeBalancerNodes     *Resource
-	SSHKeys               *Resource
-	Tickets               *Resource
-	Tokens                *Resource
-	Token                 *Resource
-	Account               *Resource
-	AccountSettings       *Resource
-	Invoices              *Resource
-	InvoiceItems          *Resource
-	Events                *Resource
+	NodeBalancers         *Resource
 	Notifications         *Resource
 	OAuthClients          *Resource
-	Profile               *Resource
-	Managed               *Resource
-	Tags                  *Resource
-	Users                 *Resource
-	Payments              *Resource
+	ObjectStorageBuckets  *Resource
 	ObjectStorageClusters *Resource
 	ObjectStorageKeys     *Resource
+	Payments              *Resource
+	Profile               *Resource
+	Regions               *Resource
+	SSHKeys               *Resource
+	StackScripts          *Resource
+	Tags                  *Resource
+	Tickets               *Resource
+	Token                 *Resource
+	Tokens                *Resource
+	Types                 *Resource
+	Users                 *Resource
+	Volumes               *Resource
 }
 
 func init() {
@@ -238,6 +239,7 @@ func addResources(client *Client) {
 		nodebalancersName:         NewResource(client, nodebalancersName, nodebalancersEndpoint, false, NodeBalancer{}, NodeBalancerConfigsPagedResponse{}),
 		notificationsName:         NewResource(client, notificationsName, notificationsEndpoint, false, Notification{}, NotificationsPagedResponse{}),
 		oauthClientsName:          NewResource(client, oauthClientsName, oauthClientsEndpoint, false, OAuthClient{}, OAuthClientsPagedResponse{}),
+		objectStorageBucketsName:  NewResource(client, objectStorageBucketsName, objectStorageBucketsEndpoint, false, ObjectStorageBucket{}, ObjectStorageBucketsPagedResponse{}),
 		objectStorageClustersName: NewResource(client, objectStorageClustersName, objectStorageClustersEndpoint, false, ObjectStorageCluster{}, ObjectStorageClustersPagedResponse{}),
 		objectStorageKeysName:     NewResource(client, objectStorageKeysName, objectStorageKeysEndpoint, false, ObjectStorageKey{}, ObjectStorageKeysPagedResponse{}),
 		paymentsName:              NewResource(client, paymentsName, paymentsEndpoint, false, Payment{}, PaymentsPagedResponse{}),
@@ -280,6 +282,7 @@ func addResources(client *Client) {
 	client.NodeBalancers = resources[nodebalancersName]
 	client.Notifications = resources[notificationsName]
 	client.OAuthClients = resources[oauthClientsName]
+	client.ObjectStorageBuckets = resources[objectStorageBucketsName]
 	client.ObjectStorageClusters = resources[objectStorageClustersName]
 	client.ObjectStorageKeys = resources[objectStorageKeysName]
 	client.Payments = resources[paymentsName]

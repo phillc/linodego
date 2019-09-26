@@ -32,9 +32,11 @@ refresh-fixtures: clean-fixtures fixtures
 
 run_fixtures:
 	@echo "* Running fixtures"
-	@LINODE_TOKEN=$(LINODE_TOKEN) \
+	@LINODE_FIXTURE_MODE="record" \
+	LINODE_TOKEN=$(LINODE_TOKEN) \
 	LINODE_API_VERSION="v4beta" \
-	LINODE_FIXTURE_MODE="record" go test $(ARGS)
+	GO111MODULE="on" \
+	go test $(ARGS)
 
 sanitize:
 	@echo "* Santizing fixtures"
