@@ -12,6 +12,7 @@ func TestGetNodeBalancerStats(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping test in short mode.")
 	}
+	var nodeBalancerStats *linodego.NodeBalancerStats
 
 	client, nodebalancer, teardown, err := setupNodeBalancer(t, "fixtures/TestGetNodeBalancerStats")
 	defer teardown()
@@ -27,7 +28,7 @@ poll:
 	for {
 		select {
 		case <-ticker.C:
-			_, err = client.GetNodeBalancerStats(context.Background(), nodebalancer.ID)
+			nodeBalancerStats, err = client.GetNodeBalancerStats(context.Background(), nodebalancer.ID)
 			if err != nil {
 				// Possible that the call succeeded but that stats aren't available (HTTP: 4XX)
 				if v, ok := err.(*linodego.Error); ok {
@@ -43,6 +44,13 @@ poll:
 			}
 		case <-timer.C:
 			t.Fatal("Error getting stats, polling timed out")
+		}
+	}
+	if nodeBalancerStats == nil {
+		t.Errorf("Expected NodeBalancerStats: %v", nodeBalancerStats)
+	} else {
+		if nodeBalancerStats.Title != "asdf" {
+			t.Errorf("Expected stats to have a title: %s", nodeBalancerStats.Title)
 		}
 	}
 }
