@@ -158,25 +158,36 @@ func (c *Client) SetToken(token string) *Client {
 	return c
 }
 
-// SetLinodeBusyRetry configures resty to retry specifically on "Linode busy." errors
-// The retry wait time is configured in SetPollDelay
-func (c *Client) SetLinodeBusyRetry() *Client {
+// type RetryConditional func(r *resty.Response) (shouldRetry bool)
+type RetryConditional resty.RetryConditionFunc
+
+var retryConditionals []RetryConditional
+
+func (c *Client) SetRetries() *Client {
+	// c.AddRetryConditional(SetLinodeBusyRetry)
 	c.resty.
 		SetRetryCount(1000).
-		SetRetryMaxWaitTime(30 * time.Second).
-		AddRetryCondition(
-			func(r *resty.Response, _ error) bool {
-				apiError, ok := r.Error().(*APIError)
-				linodeBusy := ok && apiError.Error() == "Linode busy."
-				retry := r.StatusCode() == http.StatusBadRequest && linodeBusy
-				if retry {
-					log.Printf("[INFO] Received error %s - Retrying", apiError)
-				}
-				return retry
-			},
-		)
-
+		SetRetryMaxWaitTime(30 * time.Second)
+	for _, retryConditional := range retryConditionals {
+		c.resty.AddRetryCondition(retryConditional)
+	}
 	return c
+}
+func (c *Client) AddRetryConditional(retryConditional RetryConditional) *Client {
+	retryConditionals = append(retryConditionals, retryConditional)
+	return c
+}
+
+// SetLinodeBusyRetry configures resty to retry specifically on "Linode busy." errors
+// The retry wait time is configured in SetPollDelay
+func SetLinodeBusyRetry(r *resty.Response, _ error) bool {
+	apiError, ok := r.Error().(*APIError)
+	linodeBusy := ok && apiError.Error() == "Linode busy."
+	retry := r.StatusCode() == http.StatusBadRequest && linodeBusy
+	if retry {
+		log.Printf("[INFO] Received error %s - Retrying", apiError)
+	}
+	return retry
 }
 
 // SetPollDelay sets the number of milliseconds to wait between events or status polls.
@@ -237,7 +248,7 @@ func NewClient(hc *http.Client) (client Client) {
 
 	client.
 		SetPollDelay(1000 * APISecondsPerPoll).
-		SetLinodeBusyRetry().
+		SetRetries().
 		SetDebug(envDebug)
 
 	addResources(&client)
