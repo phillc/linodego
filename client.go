@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"time"
 
+	"runtime/debug"
+
 	"github.com/go-resty/resty/v2"
 )
 
@@ -26,6 +28,8 @@ const (
 	APIVersionVar = "LINODE_API_VERSION"
 	// APIProto connect to API with http(s)
 	APIProto = "https"
+	// Version of linodego
+	Version = "0.12.0"
 	// APIEnvVar environment var to check for API token
 	APIEnvVar = "LINODE_TOKEN"
 	// APISecondsPerPoll how frequently to poll for new Events or Status in WaitFor functions
@@ -33,7 +37,7 @@ const (
 	// Maximum wait time for retries
 	APIRetryMaxWaitTime = time.Duration(30) * time.Second
 	// DefaultUserAgent is the default User-Agent sent in HTTP request headers
-	DefaultUserAgent = "linodego https://github.com/linode/linodego"
+	DefaultUserAgent = "linodego " + Version + " https://github.com/linode/linodego"
 )
 
 var (
@@ -206,6 +210,14 @@ func (c Client) Resource(resourceName string) *Resource {
 
 // NewClient factory to create new Client struct
 func NewClient(hc *http.Client) (client Client) {
+	fmt.Println(">>>>>>>>>>>>>>>>>")
+	fmt.Println(">>>>>>>>>>>>>>>>>")
+	fmt.Println(">>>>>>>>>>>>>>>>>")
+
+	fmt.Println(debug.ReadBuildInfo())
+
+	fmt.Println(">>>>>>>>>>>>>>>>>")
+	fmt.Println(">>>>>>>>>>>>>>>>>")
 	if hc != nil {
 		client.resty = resty.NewWithClient(hc)
 	} else {

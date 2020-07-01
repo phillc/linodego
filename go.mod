@@ -10,4 +10,4 @@ require (
 	k8s.io/client-go v0.18.3
 )
 
-go 1.13
+go 1.14
