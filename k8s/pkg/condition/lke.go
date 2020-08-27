@@ -32,3 +32,10 @@ func ClusterHasReadyNode(ctx context.Context, clientset kubernetes.Clientset) (b
 
 	return false, errors.New("no nodes in cluster are ready")
 }
+
+// WaitForLKEClusterReady polls with a given timeout for the LKE Cluster's api-server
+// to be healthy and for the cluster to have at least one node with the NodeReady
+// condition true.
+func (client Client) WaitForLKEClusterReady(ctx context.Context, clusterID int, options LKEClusterPollOptions) error {
+	return client.WaitForLKEClusterConditions(ctx, clusterID, options, condition.ClusterHasReadyNode)
+}

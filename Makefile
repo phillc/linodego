@@ -11,19 +11,15 @@ SKIP_LINT ?= 0
 
 .PHONY: build vet test refresh-fixtures clean-fixtures lint run_fixtures sanitize fixtures godoc testint testunit
 
-test: testunit testint
+test: build lint testunit testint
 
 citest: lint test
 
-testunit: build lint
+testunit:
 	go test -v $(PACKAGES) $(ARGS)
 
-testint: build lint
-	@LINODE_FIXTURE_MODE="play" \
-	LINODE_TOKEN="awesometokenawesometokenawesometoken" \
-	LINODE_API_VERSION="v4beta" \
-	GO111MODULE="on" \
-	go test -v ./test/integration $(ARGS)
+testint:
+	cd test && make test
 
 build: vet lint
 	go build ./...
